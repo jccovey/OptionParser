@@ -12,8 +12,8 @@ namespace OptionParser
 		private List<Option> _options;
 		private TextWriter _output;
 
-		private String _banner;
-		private String[] _help_identifiers;
+		private string _banner;
+		private string[] _help_identifiers;
 
 		private int _max_characters_per_line;
 
@@ -29,12 +29,12 @@ namespace OptionParser
 			_max_characters_per_line = max_characters_per_line;
 		}
 
-		public void Banner(String text)
+		public void Banner(string text)
 		{
 			_banner = text;
 		}
 
-		public bool Specified(String option)
+		public bool Specified(string option)
 		{
 			return _options.Any(opt => (opt.Flag.Equals(option) || opt.Name.Equals(option)) && (_option_value_pairs.ContainsKey(opt.Flag) || _option_value_pairs.ContainsKey(opt.Name)));
 		}
@@ -44,34 +44,34 @@ namespace OptionParser
 			_options.Add(option);
 		}
 
-		public void Option(String option, String name, String description, bool empty, Action<String> handler)
+		public void Option(string option, string name, string description, bool empty, Action<string> handler)
 		{
 			this.Option(new Option(option, name, description, empty, handler));
 		}
 
-		public void Option(String option, String name, String description, Action<String> handler)
+		public void Option(string option, string name, string description, Action<string> handler)
 		{
 			this.Option(option, name, description, false, handler);
 		}
 
-		public void Help(String option, String name, String description)
+		public void Help(string option, string name, string description)
 		{
 			this.Option(option, name, description, true, s =>
 			{
 				_output.WriteLine(this.ToUsageString(_banner));
 			});
 
-			_help_identifiers = new String[] { option, name };
+			_help_identifiers = new string[] { option, name };
 		}
 
-		public void Parse(String[] options)
+		public void Parse(string[] arguments)
 		{
-			this.MapValuesToOptions(options);
+			this.MapValuesToOptions(arguments);
 
 			this.ExecuteHandlersOnOptionValues();
 		}
 
-		public String ToUsageString(String description)
+		public string Usage(string description)
 		{
 			StringBuilder usage = new StringBuilder();
 			int longestFlag = _options.Max(o => o.Flag.Length);
@@ -95,9 +95,9 @@ namespace OptionParser
 			return usage.ToString();
 		}
 
-		private void MapValuesToOptions(String[] options)
+		private void MapValuesToOptions(string[] arguments)
 		{
-			foreach (string o in options)
+			foreach (string o in arguments)
 			{
 				if (_options.Any(option => option.Flag == o || option.Name == o))
 				{
@@ -105,7 +105,7 @@ namespace OptionParser
 
 					if (_help_identifiers.Contains(o))
 					{
-						_options.Last().Parse(new List<String>());
+						_options.Last().Parse(new List<string>());
 						return;
 					}
 
